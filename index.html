@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TWIRL</title>
+<meta name="description" content="TWIRL — official site. Join the mailing list.">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Work+Sans:wght@400;500;600&display=swap');
+
+  :root{
+    --ink: #f4ece7;
+    --ink-dim: #cbb9c9;
+    --bg-1: #170510;
+    --bg-2: #3a0e24;
+    --bg-3: #200a1e;
+    --accent-amber: #f2a63c;
+    --accent-amber-bright: #ffc26b;
+    --accent-violet: #6a5cd6;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html, body{
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+
+  body{
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+      radial-gradient(ellipse 120% 80% at 50% 0%, var(--bg-2) 0%, var(--bg-3) 45%, var(--bg-1) 100%);
+    background-attachment: fixed;
+    color: var(--ink);
+    font-family: 'Work Sans', -apple-system, sans-serif;
+    overflow-x: hidden;
+    padding: env(safe-area-inset-top, 0px) 24px env(safe-area-inset-bottom, 0px);
+  }
+
+  .stage{
+    width: 100%;
+    max-width: 760px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 48px 0 64px;
+  }
+
+  .gif-wrap{
+    width: 100%;
+    max-width: 640px;
+    line-height: 0;
+    opacity: 0;
+    transform: scale(0.97);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+
+  .gif-wrap.shown{
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .gif-wrap img{
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 6px;
+    filter: drop-shadow(0 18px 40px rgba(0,0,0,0.55));
+  }
+
+  .tagline{
+    margin-top: 28px;
+    font-family: 'Fraunces', Georgia, serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-size: clamp(1.1rem, 2.6vw, 1.5rem);
+    color: var(--ink-dim);
+    max-width: 34ch;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.7s ease 0.15s, transform 0.7s ease 0.15s;
+  }
+
+  .tagline.shown{
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .signup{
+    margin-top: 36px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.7s ease 0.3s, transform 0.7s ease 0.3s;
+  }
+
+  .signup.shown{
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .signup a{
+    display: inline-block;
+    padding: 15px 34px;
+    background: var(--accent-amber);
+    color: #1a0a0f;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: 0.01em;
+    border-radius: 999px 999px 999px 6px;
+    box-shadow: 0 10px 26px rgba(242, 166, 60, 0.28);
+    transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .signup a:hover,
+  .signup a:focus-visible{
+    background: var(--accent-amber-bright);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px rgba(242, 166, 60, 0.38);
+  }
+
+  .signup a:focus-visible{
+    outline: 2px solid var(--accent-violet);
+    outline-offset: 3px;
+  }
+
+  .signup p{
+    margin: 14px 0 0;
+    font-size: 0.85rem;
+    color: var(--ink-dim);
+  }
+
+  footer{
+    margin-top: 56px;
+    font-size: 0.8rem;
+    color: var(--ink-dim);
+    opacity: 0;
+    transition: opacity 0.7s ease 0.4s;
+  }
+
+  footer.shown{ opacity: 0.65; }
+
+  .loader{
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    background: var(--bg-1);
+    z-index: 10;
+    transition: opacity 0.6s ease;
+  }
+
+  .loader.hidden{
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .loader-mark{
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: 3px solid rgba(244, 236, 231, 0.18);
+    border-top-color: var(--accent-amber);
+    animation: spin 0.9s linear infinite;
+  }
+
+  .loader-text{
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 1rem;
+    color: var(--ink-dim);
+    letter-spacing: 0.01em;
+  }
+
+  @keyframes spin{
+    to{ transform: rotate(360deg); }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .gif-wrap, .tagline, .signup, footer, .loader{
+      transition: none !important;
+      transform: none !important;
+    }
+    .loader-mark{
+      animation: none;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <div class="loader" id="loader">
+    <div class="loader-mark" aria-hidden="true"></div>
+    <p class="loader-text">Loading&hellip;</p>
+  </div>
+
+  <main class="stage">
+    <div class="gif-wrap" id="gifWrap">
+      <img id="bandGif" src="twirl.gif" alt="TWIRL — animated hand-painted band name over a swirling purple background" width="750" height="278">
+    </div>
+
+    <p class="tagline" id="tagline">New music, shows, and everything else — straight to your inbox.</p>
+
+    <div class="signup" id="signup">
+      <a href="https://docs.google.com/forms/d/1OF_5MHYru0NukRJ2Ze5HTgFAnRYaXvWXGyi58AHZD-Q/viewform" target="_blank" rel="noopener">
+        Join the mailing list
+      </a>
+      <p>Opens our sign-up form in a new tab.</p>
+    </div>
+
+    <footer id="footer">&copy; <span id="year"></span> TWIRL</footer>
+  </main>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    var loader = document.getElementById('loader');
+    var gif = document.getElementById('bandGif');
+    var gifWrap = document.getElementById('gifWrap');
+    var tagline = document.getElementById('tagline');
+    var signup = document.getElementById('signup');
+    var footer = document.getElementById('footer');
+
+    function revealRest(){
+      loader.classList.add('hidden');
+      gifWrap.classList.add('shown');
+      // Small stagger so the gif visually lands first, then everything else follows.
+      setTimeout(function(){
+        tagline.classList.add('shown');
+        signup.classList.add('shown');
+        footer.classList.add('shown');
+      }, 250);
+    }
+
+    // The gif is a full-quality, uncompressed file and can take a while to
+    // download on slower connections. We keep the loading screen up the
+    // whole time so nothing else appears until it's actually ready.
+    if (gif.complete && gif.naturalWidth > 0) {
+      revealRest();
+    } else {
+      gif.addEventListener('load', revealRest);
+      // If the gif fails outright, don't leave people stuck on the loader forever.
+      gif.addEventListener('error', revealRest);
+    }
+  </script>
+
+</body>
+</html>
